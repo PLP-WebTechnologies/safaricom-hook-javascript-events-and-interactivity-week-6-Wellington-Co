@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellingtone Resort - Restaurant Review</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            transition: background-color 0.3s;
+            text-align: center;
+            background-color: grey;
+
+        }
+        body h1{
+            text-align: center;
+        }
+        #slider-output {
+            margin: 10px 0;
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+        #toggle-bg{
+            color:aliceblue;
+            background-color: #000;
+            border-radius: 10px;
+            position: fixed;
+            top:5px;
+            left: 5px;
+            font-size: 11px;
+        }
+        #size{
+            border: 1px solid #000;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: row;
+            width: max-content;
+            padding-left: 3px;
+            position: fixed;
+            top: 10px;
+            right:5px;
+            font-size: 12px;
+        }
+        #open-modal{
+            align-self: center;
+            justify-self: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to Wellingtone Resort</h1>
+
+    <!-- Interactive Button -->
+    <button id="toggle-bg">Toggle Background Color</button>
+    <!-- Slider with Real-Time Feedback -->
+    <!---Change text size-->
+    <div class="textsize" id="size">
+    <p>Adjust text size:</p>
+         <input type="range" id="text-slider" min="12" max="32" value="16">
+    </div>
+    
+   <!-- Slider  Feedback  Text  -->
+    <p id="slider-output" style="font-size: 16px;">Welcome to Wellingtone Resort, your ultimate destination for relaxation and 
+        fine dining! Nestled in a serene environment, we offer a perfect blend of comfort, delicious cuisine, and top-notch service. 
+        Whether you're here for a quick meal, a family outing, or a romantic dinner, Wellingtone Resort ensures an unforgettable experience.
+         Explore our interactive review page to share your thoughts and connect with fellow guests!</p>
+         
+    <!-- Modal -->
+     <h3>Review Wellingtone Resort</h3>
+    <button id="open-modal">Open Review Modal</button>
+    <div id="modal-overlay"></div>
+    <div id="modal">
+        <h2>Submit Your Review</h2>
+        <form id="review-form">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" required><br>
+            <span id="name-error" class="error"></span><br>
+
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+            <span id="email-error" class="error"></span><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
+            <span id="password-error" class="error"></span><br><br>
+
+            <button type="submit">Submit Review</button>
+        </form>
+        <button id="close-modal">Close</button>
+    </div>
+
+    <!-- Dropdown Bonus -->
+    <label for="message-dropdown">Select an option:</label>
+    <select id="message-dropdown">
+        <option value="">--Select--</option>
+        <option value="hello">Say Hello</option>
+        <option value="goodbye">Say Goodbye</option>
+    </select>
+    <p id="dropdown-message"></p>
+
+    <script>
+        // Toggle Background Color
+        const toggleBgButton = document.getElementById('toggle-bg');
+        let isBgToggled = false;
+        toggleBgButton.onclick = () => {
+            document.body.style.backgroundColor = isBgToggled ? 'grey' : 'lightblue';
+            isBgToggled = !isBgToggled;
+        };
+
+        // Slider for Text Size
+        const textSlider = document.getElementById('text-slider');
+        const sliderOutput = document.getElementById('slider-output');
+        textSlider.oninput = () => {
+            const size = textSlider.value;
+            sliderOutput.style.fontSize = size + 'px';
+        };
+
+        // Modal Functionality
+        const modal = document.getElementById('modal');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const openModalButton = document.getElementById('open-modal');
+        const closeModalButton = document.getElementById('close-modal');
+
+        openModalButton.onclick = () => {
+            modal.style.display = 'block';
+            modalOverlay.style.display = 'block';
+        };
+
+        closeModalButton.onclick = () => {
+            modal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        };
+
+        modalOverlay.onclick = () => {
+            modal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        };
+
+        // Form Validation
+        const reviewForm = document.getElementById('review-form');
+        const nameField = document.getElementById('name');
+        const emailField = document.getElementById('email');
+        const passwordField = document.getElementById('password');
+        const nameError = document.getElementById('name-error');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+
+        reviewForm.onsubmit = (event) => {
+            let isValid = true;
+
+            if (nameField.value.length < 3) {
+                nameError.textContent = 'Name must be at least 3 characters.';
+                isValid = false;
+            } else {
+                nameError.textContent = '';
+            }
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailField.value)) {
+                emailError.textContent = 'Enter a valid email address.';
+                isValid = false;
+            } else {
+                emailError.textContent = '';
+            }
+
+            const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!passwordPattern.test(passwordField.value)) {
+                passwordError.textContent = 'Password must be at least 8 characters, include one uppercase letter and one number.';
+                isValid = false;
+            } else {
+                passwordError.textContent = '';
+            }
+
+            if (!isValid) {
+                event.preventDefault();
+            }
+        };
+
+        // Dropdown Bonus
+        const dropdown = document.getElementById('message-dropdown');
+        const dropdownMessage = document.getElementById('dropdown-message');
+
+        dropdown.onchange = () => {
+            const value = dropdown.value;
+            if (value === 'hello') {
+                dropdownMessage.textContent = 'Hello there!';
+            } else if (value === 'goodbye') {
+                dropdownMessage.textContent = 'Goodbye!';
+            } else {
+                dropdownMessage.textContent = '';
+            }
+        };
+    </script>
+</body>
+</html>
